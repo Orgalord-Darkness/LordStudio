@@ -24,7 +24,7 @@
                     <!-- Primary Nav -->
                     <div class="hidden md:flex items-center space-x-1">
                         <a href="#" class="py-5 px-3 text-gray-700 hover:text-gray-900">Home</a>
-                        <a href="#" class="py-5 px-3 text-gray-700 hover:text-gray-900">About</a>
+                        <a href="/categorie_list" class="py-5 px-3 text-gray-700 hover:text-gray-900">Categorie</a>
                         <a href="#" class="py-5 px-3 text-gray-700 hover:text-gray-900">Contact</a>
                     </div>
                 </div>
