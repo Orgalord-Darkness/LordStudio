@@ -6,6 +6,7 @@
 </header>
 
 <!-- Contenu de la page -->
+@include('admin.sidebar')
 <main>
     {{ $slot }}
 </main>
