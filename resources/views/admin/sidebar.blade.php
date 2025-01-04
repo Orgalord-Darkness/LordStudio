@@ -47,12 +47,13 @@
             </div>
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex-shrink-0">
-                    <h2 class="text-lg font-semibold">Sidebar</h2>
+                    <h2 class="text-lg font-semibold">Naviguer</h2>
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
                         <a href="{{ url('/admin') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                         <a href="{{ url('/categorie') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categorie</a>
+                        <a href="{{ url('/serie') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Serie</a>
                     </div>
                 </div>
             </div>
@@ -64,6 +65,7 @@
         <div class="px-2 pt-2 pb-3 space-y-1">
             <a href="{{ url('/admin') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
             <a href="{{ url('/categorie') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Categorie</a>
+            <a href="{{ url('/serie') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Serie</a>
         </div>
     </div>
 </nav>

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+
+use App\Models\Serie;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 
-class CategorieController extends Controller
+class SerieController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,15 +22,16 @@ class CategorieController extends Controller
         $perPage = 25;
 
         if (!empty($keyword)) {
-            $categorie = Categorie::where('nom_categorie', 'LIKE', "%$keyword%")
-                ->orWhere('created_at', 'LIKE', "%$keyword%")
-                ->orWhere('updated_at', 'LIKE', "%$keyword%")
+            $serie = Serie::with('categorie')
+                ->orWhere('nom', 'LIKE', "%$keyword%")
+                ->orWhere('synopsis', 'LIKE', "%$keyword%")
+                ->orWhere('id_categorie', 'LIKE', "%$keyword%")
                 ->latest()->paginate($perPage);
         } else {
-            $categorie = Categorie::latest()->paginate($perPage);
+            $serie = Serie::latest()->paginate($perPage);
         }
 
-        return view('categorie.index', compact('categorie'));
+        return view('serie.index', compact('serie'));
     }
 
     /**
@@ -38,8 +41,10 @@ class CategorieController extends Controller
      */
     public function create()
     {
-        return view('categorie.create');
+        $categories = Categorie::all();
+        return view('serie.create', compact('categories'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -50,9 +55,10 @@ class CategorieController extends Controller
      */
     public function store(Request $request)
     {
+        
         $requestData = $request->all();
-        Categorie::create($requestData);
-        return redirect('categorie');
+        Serie::create($requestData);
+        return redirect('serie')->with('flash_message', 'Serie added!');
     }
 
     /**
@@ -64,9 +70,9 @@ class CategorieController extends Controller
      */
     public function show($id)
     {
-        $categorie = Categorie::findOrFail($id);
+        $serie = Serie::findOrFail($id);
 
-        return view('categorie.show', compact('categorie'));
+        return view('serie.show', compact('serie'));
     }
 
     /**
@@ -78,9 +84,10 @@ class CategorieController extends Controller
      */
     public function edit($id)
     {
-        $categorie = Categorie::findOrFail($id);
+        $categories = Categorie::all() ; 
+        $serie = Serie::findOrFail($id);
 
-        return view('categorie.edit', compact('categorie'));
+        return view('serie.edit', compact('serie'), ['categories' => $categories]);
     }
 
     /**
@@ -94,11 +101,14 @@ class CategorieController extends Controller
     public function update(Request $request, $id)
     {
         
-        $requestData = $request->all();
-        $categorie = Categorie::findOrFail($id);
-        $categorie->update($requestData);
+        // $requestData = $request->all();
+        // $serie = Serie::findOrFail($id);
+        // $serie->update($requestData);
 
-        return redirect('categorie')->with('flash_message', 'Categorie updated!');
+        // return redirect('serie')->with('flash_message', 'Serie updated!');
+        $serie = Serie::findOrFail($id); 
+        $serie->update(['nom' => $request->input('nom')]); 
+        return redirect()->route('serie.index')->with('success', 'Série mise à jour avec succès') ; 
     }
 
     /**
@@ -110,8 +120,8 @@ class CategorieController extends Controller
      */
     public function destroy($id)
     {
-        Categorie::destroy($id);
+        Serie::destroy($id);
 
-        return redirect('categorie')->with('flash_message', 'Categorie deleted!');
+        return redirect('serie')->with('flash_message', 'Serie deleted!');
     }
 }

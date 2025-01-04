@@ -16,10 +16,12 @@ class CreateSerieTable extends Migration
         Schema::create('serie', function (Blueprint $table) {
             $table->id('id_serie');
             $table->string('nom'); 
-            $table->string('synopsis') ;
-            $table->foreignId('id_categorie')->constraint('categorie');
+            $table->string('synopsis');
+            $table->uuid('id_categorie')->index();
+            $table->foreign('id_categorie')->references('id')->on('categories')->onDelete('cascade'); // Clé étrangère
             $table->timestamps();
         });
+        
     }
 
     /**

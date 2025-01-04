@@ -38,4 +38,15 @@ Route::get('/categorie/{id}/edit', [CategorieController::class, 'edit'])->name('
 Route::put('/categorie/{id}', [CategorieController::class, 'update'])->name('categories.update');
 Route::delete('/categorie/{id}', [CategorieController::class, 'destroy'])->name('categories.destroy');
 
+//routes de Serie
+use App\Http\Controllers\SerieController;
 
+Route::resource('serie', SerieController::class);
+
+Route::get('/serie', [SerieController::class, 'index'])->name('serie.index'); // Afficher la liste des séries
+Route::get('/serie/create', [SerieController::class, 'create'])->name('serie.create'); // Afficher le formulaire de création
+Route::post('/serie', [SerieController::class, 'store'])->name('serie.store'); // Enregistrer une nouvelle série
+Route::get('/serie/{id}', [SerieController::class, 'show'])->name('serie.show'); // Afficher une série spécifique
+Route::get('/serie/{id}/edit', [SerieController::class, 'edit'])->name('serie.edit'); // Afficher le formulaire d'édition
+Route::put('/serie/{id}', [SerieController::class, 'update'])->name('serie.update'); // Mettre à jour une série existante
+Route::delete('/serie/{id}', [SerieController::class, 'destroy'])->name('serie.destroy'); // Supprimer une série
