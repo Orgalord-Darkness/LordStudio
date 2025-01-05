@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
-
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class ImageController extends Controller
 {
@@ -48,29 +49,44 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        // Validez que l'image est bien fournie
-        $request->validate([
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
             'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Gérer le téléchargement du fichier
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $path = $file->store('images', 'public');
+        try {
+            // Obtenez les détails du fichier téléchargé
+            $fichier = $request->file('image');
+            $fichierNom = $fichier->getClientOriginalName();
+            $publicDirectory = public_path('image');
 
-            // Préparer les données pour l'insertion
-            $requestData = $request->all();
-            $requestData['path'] = $path;
-            $requestData['taille'] = $file->getSize();
-            $requestData['extension'] = $file->getClientOriginalExtension();
+            // Créez le répertoire s'il n'existe pas
+            if (!is_dir($publicDirectory)) {
+                mkdir($publicDirectory, 0755, true);
+            }
+            $emplacement = $publicDirectory . '/' . $fichierNom;
+            // Déplacez le fichier vers le répertoire spécifié
+            if (!move_uploaded_file($fichier->getPathname(), $emplacement)) {
+                throw new \Exception('Failed to move uploaded file.');
+            }
 
-            // Insérer les données dans la base de données
-            Image::create($requestData);
-        } else {
-            return redirect('image/create')->withErrors(['image' => 'Le téléchargement de l\'image a échoué.']);
+            // Obtenez les détails supplémentaires du fichier déplacé
+            $taille = filesize($emplacement);
+            $extension = pathinfo($emplacement, PATHINFO_EXTENSION);
+
+            $data = [
+                'nom' => $request->input('nom'),
+                'path' => 'fichiers/' . $fichierNom,
+                'taille' => $taille,
+                'extension' => '.' . $extension,
+            ];
+
+            Image::create($data);
+
+            return redirect()->route('image.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return redirect('image')->with('flash_message', 'Image ajoutée avec succès !');
     }
 
 
@@ -99,7 +115,6 @@ class ImageController extends Controller
     public function edit($id)
     {
         $image = Image::findOrFail($id);
-
         return view('image.edit', compact('image'));
     }
 
@@ -113,27 +128,45 @@ class ImageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'image' => 'sometimes|file|mimes:jpeg,png,jpg,gif|max:2048',
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'image' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $file = $request->file('image');
-        if ($file) {
-            $path = $file->store('images', 'public');
+        try {
+            $image = Image::findOrFail($id);
+            $image->nom = $request->input('nom');
 
-            $requestData = $request->all();
-            $requestData['path'] = $path;
-            $requestData['taille'] = $file->getSize();
-            $requestData['extension'] = $file->getClientOriginalExtension();
-        } else {
-            $requestData = $request->all();
+            if ($request->hasFile('image')) {
+                $fichier = $request->file('image');
+                $fichierNom = $fichier->getClientOriginalName();
+                $publicDirectory = public_path('fichiers');
+
+                if (!is_dir($publicDirectory)) {
+                    mkdir($publicDirectory, 0755, true);
+                }
+
+                $emplacement = $publicDirectory . '/' . $fichierNom;
+
+                if (!move_uploaded_file($fichier->getPathname(), $emplacement)) {
+                    throw new \Exception('Failed to move uploaded file.');
+                }
+
+                $taille = filesize($emplacement);
+                $extension = pathinfo($emplacement, PATHINFO_EXTENSION);
+                $image->path = 'fichiers/' . $fichierNom;
+                $image->taille = $taille;
+                $image->extension = '.' . $extension;
+            }
+
+            $image->save();
+
+            return redirect()->route('images.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        $image = Image::findOrFail($id);
-        $image->update($requestData);
-
-        return redirect('image')->with('flash_message', 'Image mise à jour avec succès !');
     }
+
 
 
     /**
@@ -147,6 +180,6 @@ class ImageController extends Controller
     {
         Image::destroy($id);
 
-        return redirect('image')->with('flash_message', 'Image deleted!');
+        return redirect('images')->with('flash_message', 'Image deleted!');
     }
 }

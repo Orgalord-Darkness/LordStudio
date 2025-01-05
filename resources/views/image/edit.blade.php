@@ -27,13 +27,12 @@
                         <div class="container mx-auto p-6">
                             <div class="bg-gray-900 p-6 rounded-lg shadow-md">
                                 <h1 class="text-2xl font-bold text-purple-400 mb-4">Edit Image</h1>
-                                <form method="POST" action="{{ url('/image/' . $image->id) }}" accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data">
-                                    {{ method_field('PATCH') }}
+                                <form method="POST" action="{{ route('images.update', $image->id_image) }}" accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data">
                                     {{ csrf_field() }}
-                        
+                                    @method('PUT')
                                     @include('image.form', ['formMode' => 'edit'])
-                        
                                 </form>
+                                
                             </div>
                         </div>
                         @endsection

@@ -52,26 +52,26 @@ Route::put('/serie/{id}', [SerieController::class, 'update'])->name('serie.updat
 Route::delete('/serie/{id}', [SerieController::class, 'destroy'])->name('serie.destroy'); // Supprimer une série
 
 //Routes de Image 
-Route::resource('image', 'ImageController');
 use App\Http\Controllers\ImageController;
 
-// Afficher la liste des images
-Route::get('/image', [ImageController::class, 'index'])->name('image.index');
+Route::resource('images', ImageController::class);
+// // Afficher la liste des images
+// Route::get('/images', [ImageController::class, 'index'])->name('image.index');
 
-// Afficher le formulaire de création d'une nouvelle image
-Route::get('/image/create', [ImageController::class, 'create'])->name('image.create');
+// // Afficher le formulaire de création d'une nouvelle image
+// Route::get('/image/create', [ImageController::class, 'create'])->name('image.create');
 
-// Stocker la nouvelle image
-Route::post('/image', [ImageController::class, 'store'])->name('image.store');
+// // Stocker la nouvelle image
+// Route::post('/image', [ImageController::class, 'store'])->name('image.store');
 
-// Afficher une image spécifique
-Route::get('/image/{id}', [ImageController::class, 'show'])->name('image.show');
+// // Afficher une image spécifique
+// Route::get('/image/{id}', [ImageController::class, 'show'])->name('image.show');
 
-// Afficher le formulaire de modification d'une image existante
-Route::get('/image/{id}/edit', [ImageController::class, 'edit'])->name('image.edit');
+// // Afficher le formulaire de modification d'une image existante
+// Route::get('/image/{id}/edit', [ImageController::class, 'edit'])->name('image.edit');
 
-// Mettre à jour une image existante
-Route::put('/image/{id}', [ImageController::class, 'update'])->name('image.update');
+// // Mettre à jour une image existante
+// Route::put('/image/{id}', [ImageController::class, 'update'])->name('image.update');
 
-// Supprimer une image existante
-Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
+// // Supprimer une image existante
+// Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');

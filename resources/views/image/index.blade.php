@@ -7,9 +7,9 @@
 
             <div class="col-md-9">
                 <div class="card bg-gray-900 text-gray-300">
-                    <div class="card-header text-purple-300">Image</div>
+                    <div class="card-header text-purple-300">Images</div>
                     <div class="card-body">
-                        <a href="{{ url('/image/create') }}" class="btn btn-success btn-sm" title="Add New Image">
+                        <a href="{{ url('/images/create') }}" class="btn btn-success btn-sm" title="Add New Image">
                             <i class="fa fa-plus" aria-hidden="true"></i> Add New
                         </a>
 
@@ -30,21 +30,44 @@
                             <table class="table text-gray-300">
                                 <thead>
                                     <tr>
-                                        <th>#</th><th>Actions</th>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Nom</th>
+                                        <th>Path</th>
+                                        <th>Taille</th>
+                                        <th>Extension</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($image as $item)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>
-                                            <a href="{{ url('/image/' . $item->id) }}" title="View Image"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i> View</button></a>
-                                            <a href="{{ url('/image/' . $item->id . '/edit') }}" title="Edit Image"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
+                                        <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                                        <td class="px-4 py-2">
+                                            <img src="{{ url($item->path) }}" alt="{{ $item->nom }}" class="w-16 h-16 rounded">
 
-                                            <form method="POST" action="{{ url('/image' . '/' . $item->id) }}" accept-charset="UTF-8" style="display:inline">
+                                        </td>
+                                        <td class="px-4 py-2">{{ $item->nom }}</td>
+                                        <td class="px-4 py-2">{{ $item->path }}</td>
+                                        <td class="px-4 py-2">{{ $item->taille }}</td>
+                                        <td class="px-4 py-2">{{ $item->extension }}</td>
+                                        <td class="px-4 py-2">
+                                            <a href="{{ url('/images/' . $item->id_image) }}" title="View Image">
+                                                <button class="btn btn-info btn-sm text-white bg-blue-500 hover:bg-blue-700 px-3 py-1 rounded-md">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i> View
+                                                </button>
+                                            </a>
+                                            <a href="{{ url('/images/' . $item->id_image . '/edit') }}" title="Edit Image">
+                                                <button class="btn btn-primary btn-sm text-white bg-green-500 hover:bg-green-700 px-3 py-1 rounded-md">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                                                </button>
+                                            </a>
+                                            <form method="POST" action="{{ url('/images' . '/' . $item->id_image) }}" accept-charset="UTF-8" style="display:inline">
                                                 {{ method_field('DELETE') }}
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Delete Image" onclick="return confirm(&quot;Confirm delete?&quot;)"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+                                                <button type="submit" class="btn btn-danger btn-sm text-white bg-red-500 hover:bg-red-700 px-3 py-1 rounded-md" title="Delete Image" onclick="return confirm(&quot;Confirm delete?&quot;)">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>

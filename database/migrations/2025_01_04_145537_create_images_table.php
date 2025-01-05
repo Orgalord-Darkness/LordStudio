@@ -14,10 +14,11 @@ class CreateImagesTable extends Migration
     public function up()
     {
         Schema::create('image', function (Blueprint $table) {
-            $table->id('id_image');
-            $table->string('path');
-            $table->integer('taille');
-            $table->string('extension');
+            $table->increments('id_image');
+            $table->string('nom')->default('nom par défaut') ; 
+            $table->string('path')->default('default/path'); //default sert à mettre une valeur par défaut alors que ->change() sert à rendre le champ facultatif
+            $table->integer('taille')->default(0);
+            $table->string('extension')->default('.jpg');
             $table->timestamps();
         });
     }
