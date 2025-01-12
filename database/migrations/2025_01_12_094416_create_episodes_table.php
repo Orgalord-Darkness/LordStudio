@@ -12,8 +12,16 @@ class CreateEpisodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('episodes', function (Blueprint $table) {
+        Schema::create('episode', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('titre'); 
+            $table->integer('id_serie')->index();
+            $table->foreign('id_serie')->references('id')->on('serie')->onDelete('cascade'); // Clé étrangère
+            $table->integer('saison'); 
+            $table->string('type'); 
+            $table->string('path')->default('chemin/par/défaut'); 
+            $table->float('taille')->default(0.0); 
+            $table->string('extension')->default('.defaut'); 
             $table->timestamps();
             });
     }
@@ -25,6 +33,6 @@ class CreateEpisodesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('episodes');
+        Schema::drop('episode');
     }
 }

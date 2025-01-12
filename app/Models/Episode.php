@@ -11,7 +11,7 @@ class Episode extends Model
      *
      * @var string
      */
-    protected $table = 'episodes';
+    protected $table = 'episode';
 
     /**
     * The database primary key value.
@@ -25,7 +25,9 @@ class Episode extends Model
      *
      * @var array
      */
-    protected $fillable = [''];
+    protected $fillable = ['nom', 'id_serie','saison','type','path', 'taille', 'extension'];
 
-    
+    public function categorie() { return $this->belongsTo(Serie::class, 'id_serie'); }
+
+    public function episodes() { return $this->hasMany(Episode::class, 'id_serie'); }
 }

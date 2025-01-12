@@ -54,6 +54,14 @@ class SerieSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'nom' => 'Berserk 1997',
+                'synopsis' => 'La série "Berserk" de 1997 suit Guts, un guerrier solitaire marqué par un destin tragique, alors qu\'il combat
+                 des forces surnaturelles et forge des alliances improbables dans un monde médiéval brutal et sombre..',
+                'id_categorie' => $categorieIds[array_rand($categorieIds)],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

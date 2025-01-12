@@ -75,4 +75,6 @@ Route::resource('images', ImageController::class);
 
 // // Supprimer une image existante
 // Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
-Route::resource('episode', 'EpisodeController');
+use App\Http\Controllers\EpisodeController;
+
+Route::resource('episode', EpisodeController::class);

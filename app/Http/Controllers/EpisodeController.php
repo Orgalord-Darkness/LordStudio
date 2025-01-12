@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 
 use App\Models\Episode;
+use App\Models\Serie ; 
 use Illuminate\Http\Request;
 
 class EpisodeController extends Controller
@@ -21,7 +22,7 @@ class EpisodeController extends Controller
         $perPage = 25;
 
         if (!empty($keyword)) {
-            $episode = Episode::->latest()->paginate($perPage);
+            $episode = Episode::latest()->paginate($perPage);
         } else {
             $episode = Episode::latest()->paginate($perPage);
         }
@@ -36,7 +37,8 @@ class EpisodeController extends Controller
      */
     public function create()
     {
-        return view('episode.create');
+        $series = Serie::all() ; 
+        return view('episode.create', compact('series'));
     }
 
     /**
@@ -48,14 +50,46 @@ class EpisodeController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $requestData = $request->all();
-        
-        Episode::create($requestData);
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'file' => 'required|file|mimes:mp4|max:819200', // 800MB in kilobytes
+        ]);
 
-        return redirect('episode')->with('flash_message', 'Episode added!');
+        try {
+            $fichier = $request->file('file');
+            $fichierNom = $fichier->getClientOriginalName();
+            $publicDirectory = public_path('videos/episode');
+
+            if (!is_dir($publicDirectory)) {
+                mkdir($publicDirectory, 0755, true);
+            }
+
+            $emplacement = $publicDirectory . '/' . $fichierNom;
+            $fichier->move($publicDirectory, $fichierNom);
+
+            $taille = $fichier->getSize();
+            $extension = $fichier->getClientOriginalExtension();
+
+            $data = [
+                'titre' => $request->input('titre'),
+                'id_serie' => $request->input('id_serie'),
+                'saison' => $request->input('saison'),
+                'type' => $request->input('type'),
+                'path' => 'videos/episode/' . $fichierNom,
+                'taille' => $taille,
+                'extension' => '.' . $extension,
+            ];
+
+            Episode::create($data);
+
+            return redirect()->route('episode.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
+
+    
     /**
      * Display the specified resource.
      *
@@ -80,8 +114,8 @@ class EpisodeController extends Controller
     public function edit($id)
     {
         $episode = Episode::findOrFail($id);
-
-        return view('episode.edit', compact('episode'));
+         $series = Serie::all() ; 
+        return view('episode.edit', compact('series','episode'));
     }
 
     /**
@@ -95,12 +129,43 @@ class EpisodeController extends Controller
     public function update(Request $request, $id)
     {
         
-        $requestData = $request->all();
-        
-        $episode = Episode::findOrFail($id);
-        $episode->update($requestData);
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'image' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-        return redirect('episode')->with('flash_message', 'Episode updated!');
+        try {
+            $image = Image::findOrFail($id);
+            $image->nom = $request->input('nom');
+
+            if ($request->hasFile('episode')) {
+                $fichier = $request->file('episode');
+                $fichierNom = $fichier->getClientOriginalName();
+                $publicDirectory = public_path('episode');
+
+                if (!is_dir($publicDirectory)) {
+                    mkdir($publicDirectory, 0755, true);
+                }
+
+                $emplacement = $publicDirectory . '/' . $fichierNom;
+
+                if (!move_uploaded_file($fichier->getPathname(), $emplacement)) {
+                    throw new \Exception('Failed to move uploaded file.');
+                }
+
+                $taille = filesize($emplacement);
+                $extension = pathinfo($emplacement, PATHINFO_EXTENSION);
+                $image->path = 'fichiers/videos/episode/' . $fichierNom;
+                $image->taille = $taille;
+                $image->extension = '.' . $extension;
+            }
+
+            $image->save();
+
+            return redirect()->route('episode.index');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**

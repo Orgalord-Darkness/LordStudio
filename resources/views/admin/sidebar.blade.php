@@ -56,6 +56,7 @@
                         <a href="{{ url('/categorie') }}" class="text-gray-300 hover:bg-purple-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categorie</a>
                         <a href="{{ url('/serie') }}" class="text-gray-300 hover:bg-purple-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Serie</a>
                         <a href="{{ url('/images') }}" class="text-gray-300 hover:bg-purple-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Image</a>
+                        <a href="{{ url('/episode') }}" class="text-gray-300 hover:bg-purple-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Episode</a>
                     </div>
                 </div>
             </div>
